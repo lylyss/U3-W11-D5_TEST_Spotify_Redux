@@ -1,0 +1,5 @@
+export const FETCH_SONGS = "FETCH_SONGS";
+export const LIKE_SONG = "LIKE_SONG";
+export const SAVE_SEARCH_RESULTS = "SAVE_SEARCH_RESULTS";
+export const SET_CURRENT_SONG = "SET_CURRENT_SONG";
+export const TOGGLE_LIKE_SONG = "TOGGLE_LIKE_SONG";
