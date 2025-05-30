@@ -1,4 +1,4 @@
-/* import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectSong, toggleLike } from "../redux/actions/index.js";
 
 const SearchResults = () => {
@@ -35,4 +35,3 @@ const SearchResults = () => {
 };
 
 export default SearchResults;
- */

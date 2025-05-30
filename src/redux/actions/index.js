@@ -6,6 +6,7 @@ export const fetchSongs = (artistName) => async (dispatch) => {
     const response = await fetch(`https://striveschool-api.herokuapp.com/api/deezer/search?q=${artistName}`);
     if (response.ok) {
       const { data } = await response.json();
+      console.log("Fetched Songs:", data);
       dispatch({ type: FETCH_SONGS, payload: data });
     } else {
       throw new Error("Error fetching songs");
@@ -15,7 +16,6 @@ export const fetchSongs = (artistName) => async (dispatch) => {
   }
 };
 
-// Azione per mettere "mi piace" a una canzone
 export const likeSong = (songId) => {
   return {
     type: LIKE_SONG,
@@ -23,7 +23,6 @@ export const likeSong = (songId) => {
   };
 };
 
-// Azione per salvare i risultati della ricerca
 export const saveSearchResults = (results) => {
   return {
     type: SAVE_SEARCH_RESULTS,
@@ -31,7 +30,6 @@ export const saveSearchResults = (results) => {
   };
 };
 
-// Azione per impostare la canzone corrente
 export const setCurrentSong = (song) => {
   return {
     type: SET_CURRENT_SONG,
@@ -39,7 +37,6 @@ export const setCurrentSong = (song) => {
   };
 };
 
-// Azione per alternare il "mi piace" su una canzone
 export const toggleLikeSong = (songId) => {
   return {
     type: TOGGLE_LIKE_SONG,
