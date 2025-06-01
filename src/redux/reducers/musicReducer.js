@@ -10,17 +10,17 @@ const initialState = {
 
 const musicReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "SET_SONGS":
+    case FETCH_SONGS:
       return {
         ...state,
         [action.payload.category]: action.payload.songs,
       };
-    case "LIKE_SONG":
+    case TOGGLE_LIKE_SONG:
       return {
         ...state,
         likedSongs: state.likedSongs.includes(action.payload) ? state.likedSongs.filter((id) => id !== action.payload) : [...state.likedSongs, action.payload],
       };
-    case "SET_CURRENT_SONG":
+    case SET_CURRENT_SONG:
       return {
         ...state,
         currentSong: action.payload,
