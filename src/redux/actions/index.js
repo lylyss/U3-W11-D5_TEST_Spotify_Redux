@@ -1,45 +1,60 @@
-import { FETCH_SONGS, LIKE_SONG, SAVE_SEARCH_RESULTS, SET_CURRENT_SONG, TOGGLE_LIKE_SONG } from "./actionTypes";
+import { FETCH_SONGS, LIKE_SONG, SET_CURRENT_SONG } from "./actionTypes";
 
-// Azione per fetchare le canzoni
-export const fetchSongs = (artistName) => async (dispatch) => {
+export const fetchSongs = (query, genre) => async (dispatch) => {
   try {
-    const response = await fetch(`https://striveschool-api.herokuapp.com/api/deezer/search?q=${artistName}`);
-    if (response.ok) {
-      const { data } = await response.json();
-      console.log("Fetched Songs:", data);
-      dispatch({ type: FETCH_SONGS, payload: data });
-    } else {
-      throw new Error("Error fetching songs");
-    }
+    const response = await fetch(`https://striveschool-api.herokuapp.com/api/deezer/search?q=${query}`);
+    if (!response.ok) throw new Error("Failed to fetch songs");
+    const data = await response.json();
+
+    dispatch({
+      type: FETCH_SONGS,
+      payload: {
+        genre,
+        songs: data.data,
+      },
+    });
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching songs:", error);
   }
 };
 
-export const likeSong = (songId) => {
-  return {
-    type: LIKE_SONG,
-    payload: songId,
-  };
+export const likeSong = (songId) => ({
+  type: LIKE_SONG,
+  payload: songId,
+});
+
+export const setCurrentSong = (song) => ({
+  type: SET_CURRENT_SONG,
+  payload: song,
+});
+
+const initialState = {
+  songs: [],
+  currentSong: null,
+  likedSongs: [],
 };
 
-export const saveSearchResults = (results) => {
-  return {
-    type: SAVE_SEARCH_RESULTS,
-    payload: results,
-  };
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_SONGS:
+      console.log("FETCH_SONGS payload:", action.payload);
+      return {
+        ...state,
+        songs: action.payload.songs,
+      };
+    case LIKE_SONG:
+      return {
+        ...state,
+        likedSongs: state.likedSongs.includes(action.payload) ? state.likedSongs.filter((id) => id !== action.payload) : [...state.likedSongs, action.payload],
+      };
+    case SET_CURRENT_SONG:
+      return {
+        ...state,
+        currentSong: action.payload,
+      };
+    default:
+      return state;
+  }
 };
 
-export const setCurrentSong = (song) => {
-  return {
-    type: SET_CURRENT_SONG,
-    payload: song,
-  };
-};
-
-export const toggleLikeSong = (songId) => {
-  return {
-    type: TOGGLE_LIKE_SONG,
-    payload: songId,
-  };
-};
+export default reducer;

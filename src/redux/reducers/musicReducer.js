@@ -1,8 +1,8 @@
-import { FETCH_SONGS, SET_CURRENT_SONG, TOGGLE_LIKE_SONG } from "../actions/actionTypes";
+import { FETCH_SONGS, SET_CURRENT_SONG, LIKE_SONG } from "../actions/actionTypes";
 
 const initialState = {
-  popSongs: [],
   rockSongs: [],
+  popSongs: [],
   hipHopSongs: [],
   likedSongs: [],
   currentSong: null,
@@ -13,12 +13,14 @@ const musicReducer = (state = initialState, action) => {
     case FETCH_SONGS:
       return {
         ...state,
-        [action.payload.category]: action.payload.songs,
+        [action.payload.genre]: action.payload.songs, // Salva le canzoni nella categoria corretta
       };
-    case TOGGLE_LIKE_SONG:
+    case LIKE_SONG:
       return {
         ...state,
-        likedSongs: state.likedSongs.includes(action.payload) ? state.likedSongs.filter((id) => id !== action.payload) : [...state.likedSongs, action.payload],
+        likedSongs: state.likedSongs.includes(action.payload)
+          ? state.likedSongs.filter((id) => id !== action.payload)
+          : [...state.likedSongs, action.payload],
       };
     case SET_CURRENT_SONG:
       return {

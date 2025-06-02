@@ -1,12 +1,20 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { useRef, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Container, Row, Col, Button, ProgressBar } from "react-bootstrap";
+import { likeSong } from "../redux/actions/index.js";
 
 const MusicPlayer = () => {
   const currentSong = useSelector((state) => state.music.currentSong);
+  const likedSongs = useSelector((state) => state.music.likedSongs || []);
+  const dispatch = useDispatch();
   const audioRef = useRef(null); // Riferimento all'elemento audio
   const [isPlaying, setIsPlaying] = useState(false); // Stato per gestire Play/Pause
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  const isLiked = currentSong && likedSongs.includes(currentSong.id);
 
   const handlePlayPause = () => {
     if (audioRef.current) {
@@ -19,39 +27,107 @@ const MusicPlayer = () => {
     }
   };
 
+  const handleLike = () => {
+    if (currentSong) {
+      dispatch(likeSong(currentSong.id));
+    }
+  };
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.addEventListener("timeupdate", () => {
+        setCurrentTime(audioRef.current.currentTime);
+        setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
+      });
+
+      audioRef.current.addEventListener("loadedmetadata", () => {
+        setDuration(audioRef.current.duration);
+      });
+    }
+  }, []);
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   return (
     <Container fluid className="bg-dark text-white py-2">
       {currentSong ? (
         <Row className="align-items-center">
-          {/* Immagine dell'album */}
-          <Col xs={2} className="d-flex justify-content-center">
-            <img src={currentSong.album.cover_medium} alt={currentSong.title} className="img-fluid" style={{ width: "50px", height: "50px" }} />
+          <Col xs={3} className="d-flex justify-content-end">
+            <img src={currentSong.album.cover_medium} alt={currentSong.title} className="img-fluid" style={{ width: "100px", height: "100px" }} />
+            <i
+              className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"} text-light fs-5`}
+              style={{
+                cursor: "pointer",
+                position: "absolute",
+                top: "45px",
+                right: "150px",
+              }}
+              onClick={handleLike}
+            ></i>
           </Col>
 
-          {/* Dettagli della canzone */}
-          <Col xs={6} className="text-center">
-            <p className="mb-0 fw-bold">{currentSong.title}</p>
-            <small>{currentSong.artist.name}</small>
-          </Col>
+          <Col xs={6} className="d-flex flex-column align-items-center">
+            <div className="text-center mb-2">
+              <p className="mb-0 fw-bold">
+                {currentSong.title} - <small className="fw-medium">Artist: {currentSong.artist.name}</small>
+              </p>
+            </div>
 
-          {/* Controlli audio */}
-          <Col xs={4} className="d-flex justify-content-end align-items-center">
-            <Button variant="outline-light" className="me-2">
-              <i className="bi bi-skip-backward-fill"></i> {/* Skip Backward */}
-            </Button>
-            <Button variant="outline-light" className="me-2" onClick={handlePlayPause}>
-              <i className={`bi ${isPlaying ? "bi-pause-fill" : "bi-play-fill"}`}></i> {/* Play/Pause */}
-            </Button>
-            <Button variant="outline-light" className="me-2">
-              <i className="bi bi-skip-forward-fill"></i> {/* Skip Forward */}
-            </Button>
+            {/* Controlli audio */}
+            <div className="d-flex justify-content-center mb-2">
+              <Button variant="outline-light" className="border-0">
+                <i className="bi bi-shuffle"></i>
+              </Button>
+              <Button variant="outline-light" className="border-0">
+                <i className="bi bi-skip-backward-fill"></i> {/* Skip Backward */}
+              </Button>
+              <Button variant="outline-light" className=" border-0" onClick={handlePlayPause}>
+                <i className={`bi ${isPlaying ? "bi-pause-fill" : "bi-play-fill"}`}></i> {/* Play/Pause */}
+              </Button>
+              <Button variant="outline-light" className=" border-0">
+                <i className="bi bi-skip-forward-fill"></i> {/* Skip Forward */}
+              </Button>
+              <Button variant="outline-light" className=" border-0">
+                <i className="bi bi-repeat"></i>
+              </Button>
+            </div>
             <audio ref={audioRef} src={currentSong.preview} className="d-none" />
+
+            {/* Barra di progresso */}
+            <div className="w-100">
+              <ProgressBar now={progress} variant="white" className="bg-secondary" style={{ height: "3px" }} />
+              <div className="d-flex justify-content-between text-secondary mt-1">
+                <small>{formatTime(currentTime)}</small>
+                <small>{formatTime(duration)}</small>
+              </div>
+            </div>
           </Col>
         </Row>
       ) : (
-        <Row>
-          <Col className="text-center">
-            <p className="mb-0">Select a song to play</p>
+        <Row className="text-center mt-3 ">
+          <div className="d-flex justify-content-center mb-2">
+            <Button variant="outline-light" className="border-0 text-secondary">
+              <i className="bi bi-shuffle"></i>
+            </Button>
+            <Button variant="outline-light" className="border-0 text-secondary">
+              <i className="bi bi-skip-backward-fill"></i>
+            </Button>
+            <Button variant="outline-light" className=" border-0 text-secondary">
+              <i className="bi-play-fill"></i>
+            </Button>
+            <Button variant="outline-light" className=" border-0 text-secondary">
+              <i className="bi bi-skip-forward-fill"></i>
+            </Button>
+            <Button variant="outline-light" className=" border-0 text-secondary">
+              <i className="bi bi-repeat"></i>
+            </Button>
+          </div>
+          <Col xs={6} className="mx-auto mb-2">
+            <ProgressBar className="bg-secondary" style={{ height: "3px" }}></ProgressBar>
           </Col>
         </Row>
       )}
