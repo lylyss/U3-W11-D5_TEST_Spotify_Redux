@@ -16,7 +16,7 @@ const Home = () => {
           <MainContent />
 
           {/* Music Player */}
-          <div className="bg-dark text-white position-sticky m-0" style={{ bottom: 0 }}>
+          <div className="bg-dark text-white position-sticky m-0" style={{ bottom: -1 }}>
             <MusicPlayer />
           </div>
         </Col>

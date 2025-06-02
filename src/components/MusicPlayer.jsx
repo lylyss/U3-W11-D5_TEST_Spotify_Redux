@@ -59,7 +59,7 @@ const MusicPlayer = () => {
           <Col xs={3} className="d-flex justify-content-end">
             <img src={currentSong.album.cover_medium} alt={currentSong.title} className="img-fluid" style={{ width: "100px", height: "100px" }} />
             <i
-              className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"} text-light fs-5`}
+              className={`bi ${isLiked ? "bi-heart-fill" : "bi-heart"} text-light fs-`}
               style={{
                 cursor: "pointer",
                 position: "absolute",

@@ -64,7 +64,7 @@ const MainContent = () => {
       <h4 className="text-light text-left mt-4" style={{ paddingLeft: 170 }}>
         Pop Culture
       </h4>
-      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-4" style={{ padding: "0 210px" }}>
+      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-4 " style={{ padding: "0 210px" }}>
         {popSongs.slice(0, 4).map((song) => (
           <AlbumCard key={song.id} song={song} />
         ))}
@@ -74,7 +74,7 @@ const MainContent = () => {
       <h4 className="text-light text-left mt-4" style={{ paddingLeft: 170 }}>
         Hip Hop
       </h4>
-      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-4" style={{ padding: "0 210px" }}>
+      <Row className="d-flex justify-content-center align-items-center flex-wrap mt-4 " style={{ padding: "0 210px" }}>
         {hipHopSongs.slice(0, 4).map((song) => (
           <AlbumCard key={song.id} song={song} />
         ))}
